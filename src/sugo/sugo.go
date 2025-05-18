@@ -26,6 +26,7 @@ type Site struct {
 
 	Title   string `toml:"title"`
 	SiteUrl string `toml:"url"`
+	Port    string `toml:"port"`
 	RootDir string
 }
 

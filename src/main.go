@@ -60,18 +60,20 @@ func main() {
 		return
 	}
 
-	site, err := cmdbuild.Build(rootPath, configFile)
-	if err != nil {
-		log.Fatal(err.Error())
-		return
-	}
+	cmdbuild.Build(rootPath, configFile)
 
 	if command == "run" {
-		log.Default().Printf("Listening on %v\n", site.SiteUrl)
-		err = http.ListenAndServe(site.SiteUrl, http.FileServer(http.Dir("build")))
-		if err != nil {
-			log.Fatal(err.Error())
-			return
-		}
+		// 	// setup fsnotify watcher
+		// 	go watchDirs([]string{
+		// 		filepath.Join(rootPath, "content"),
+		// 		filepath.Join(rootPath, "public"),
+		// 		filepath.Join(rootPath, "templates"),
+		// 	}, func() {
+		// 		cmdbuild.Build(rootPath, configFile)
+		// 	})
+
+		// 	// serve site
+		log.Default().Print("Listening on http://localhost:8080\n")
+		_ = http.ListenAndServe("localhost:8080", http.FileServer(http.Dir("build")))
 	}
 }
