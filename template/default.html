@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Title }}</title>
+</head>
+<body>
+    {{ template "header.html" . }}
+
+    <main>
+        {{ if .IsRoot }}
+            {{ if .SubGroups }}
+                <h2>하위 그룹</h2>
+                <ul>
+                    {{ range $i, $g := .SubGroups }}
+                        <li><a href="{{ $g.Url }}/">{{ $g.Name }}</a></li>
+                    {{ end }}
+                </ul>
+            {{ end }}
+        {{ end }}
+
+        {{ if .SubPages }}
+            <h2>하위 페이지</h2>
+            <ul>
+                {{ range $i, $p := .SubPages }}
+                    <li><a href="{{ $p.Url }}.html">{{ $p.Title }}</a></li>
+                {{ end }}
+            </ul>
+        {{ end }}
+        
+        {{ if .Page }}
+        <article>
+            {{ .Page.Content }}
+        </article>
+        {{ end }}
+    </main>
+
+    {{ template "footer.html" . }}
+
+</body>
+</html>
+
+

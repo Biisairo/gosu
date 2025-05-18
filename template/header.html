@@ -1,0 +1,10 @@
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                {{ range .Nav }}
+                    <li><a href="{{ .Url }}/">{{ .Name }}</a></li>
+                {{ end }}
+            </ul>
+        </nav>
+    </header>
