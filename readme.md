@@ -1,5 +1,8 @@
 # Static Site Generator
 
+## deploy
+change github folder to .github
+
 ## content dir
 
 config menu tree as content dir tree
@@ -34,3 +37,8 @@ public file
 ## template
 
 go template html file
+
+# TODO
+
+하위 경로 (github.io 가 아닌 다른 레포에서 배포) 사용할 때 처리
+페이지 생성 로직 수정
