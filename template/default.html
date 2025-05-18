@@ -13,7 +13,7 @@
                 <h2>하위 그룹</h2>
                 <ul>
                     {{ range $i, $g := .SubGroups }}
-                        <li><a href="{{ $g.Url }}/">{{ $g.Name }}</a></li>
+                        <li><a href="{{ .BaseURL }}{{ $g.Url }}/">{{ $g.Name }}</a></li>
                     {{ end }}
                 </ul>
             {{ end }}
@@ -23,7 +23,7 @@
             <h2>하위 페이지</h2>
             <ul>
                 {{ range $i, $p := .SubPages }}
-                    <li><a href="{{ $p.Url }}.html">{{ $p.Title }}</a></li>
+                    <li><a href="{{ .BaseURL }}{{ $p.Url }}.html">{{ $p.Title }}</a></li>
                 {{ end }}
             </ul>
         {{ end }}

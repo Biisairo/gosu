@@ -10,17 +10,19 @@ import (
 	"github.com/Biisairo/sugo/src/sugo"
 )
 
-func Build(rootPath string, configFile string) {
+func Build(rootPath string, configFile string) (*sugo.Site, error) {
 	site := &sugo.Site{
 		RootDir: rootPath,
 	}
 
 	if err := site.ParseConfig(filepath.Join(rootPath, configFile)); err != nil {
 		log.Fatalf("Error reading configuration file at %s: %s\n", rootPath+configFile, err)
+		return nil, err
 	}
 
 	if err := site.ReadContent(filepath.Join(rootPath, "content")); err != nil {
 		log.Fatalf("Error reading content/: %s", err)
+		return nil, err
 	}
 
 	// ck(site.RootGroup, 0)
@@ -36,7 +38,10 @@ func Build(rootPath string, configFile string) {
 	os.RemoveAll("dist")
 	if err := sugo.RenderGroupToFiles(site.RootGroup, tmpl, "build", topNav); err != nil {
 		log.Fatalf("빌드 실패: %v", err)
+		return nil, err
 	}
+
+	return site, nil
 }
 
 func ck(g *sugo.Group, layer int) {
