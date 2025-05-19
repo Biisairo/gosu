@@ -33,9 +33,11 @@
         {{ end }}
         
         {{ if .Page }}
-        <article>
-            {{ .Page.Content }}
-        </article>
+            {{ if .Page.Content }}
+            <article>
+                {{ .Page.Content }}
+            </article>
+            {{ end }}
         {{ end }}
     </main>
 
