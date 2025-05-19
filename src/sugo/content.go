@@ -3,6 +3,7 @@ package sugo
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"os"
 	"path/filepath"
 	"strings"
@@ -121,7 +122,7 @@ func parsePage(p *Page) error {
 		return nil
 	}
 
-	p.Content = content
+	p.Content = template.HTML(content)
 
 	return nil
 }

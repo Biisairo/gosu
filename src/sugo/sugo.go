@@ -44,7 +44,7 @@ type Page struct {
 
 	Template string `toml:"template"`
 
-	Content string
+	Content template.HTML
 
 	OrigFilepath string
 	Url          string
