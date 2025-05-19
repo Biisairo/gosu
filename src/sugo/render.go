@@ -1,7 +1,6 @@
 package sugo
 
 import (
-	"html/template"
 	"os"
 	"path/filepath"
 	"sort"
@@ -32,15 +31,15 @@ func GetTopLevelGroups(root *Group) []*Group {
 }
 
 // 그룹 렌더링
-func RenderGroupToFiles(siteUrl string, root *Group, tmpl *template.Template, outputDir string, topNav []*Group) error {
+func RenderGroupToFiles(site *Site, root *Group, topNav []*Group) error {
 	if root.Index != nil {
-		outputPath := filepath.Join(outputDir, root.Url, "index.html")
-		if err := renderPageToFile(siteUrl, root.Index, tmpl, outputPath, topNav, groupSubgroups(root), groupSubPages(root)); err != nil {
+		outputPath := filepath.Join(root.Url, "index.html")
+		if err := renderPageToFile(site, root, root.Index, topNav, outputPath); err != nil {
 			return err
 		}
 	} else {
-		outputPath := filepath.Join(outputDir, root.Url, "index.html")
-		if err := renderEmptyToFile(siteUrl, root.Name, tmpl, outputPath, topNav, groupSubgroups(root), groupSubPages(root)); err != nil {
+		outputPath := filepath.Join("build", root.Url, "index.html")
+		if err := renderEmptyToFile(site, root, topNav, outputPath); err != nil {
 			return err
 		}
 	}
@@ -50,15 +49,15 @@ func RenderGroupToFiles(siteUrl string, root *Group, tmpl *template.Template, ou
 		if page == root.Index {
 			continue
 		}
-		outputPath := filepath.Join(outputDir, page.Url+".html")
-		if err := renderPageToFile(siteUrl, page, tmpl, outputPath, topNav, nil, nil); err != nil {
+		outputPath := filepath.Join("build", page.Url+".html")
+		if err := renderPageToFile(site, root, page, topNav, outputPath); err != nil {
 			return err
 		}
 	}
 
 	// Recursively render subgroups
 	for _, sub := range root.Groups {
-		if err := RenderGroupToFiles(siteUrl, sub, tmpl, outputDir, topNav); err != nil {
+		if err := RenderGroupToFiles(site, sub, topNav); err != nil {
 			return err
 		}
 	}
@@ -67,9 +66,12 @@ func RenderGroupToFiles(siteUrl string, root *Group, tmpl *template.Template, ou
 }
 
 // 렌더링에 필요한 데이터 구조 및 실행
-func renderPageToFile(siteUrl string, page *Page, tmpl *template.Template, path string, nav []*Group, subGroups []*Group, subPages []*Page) error {
+func renderPageToFile(site *Site, root *Group, page *Page, nav []*Group, outputPath string) error {
+	subGroups := groupSubgroups(root)
+	subPages := groupSubPages(root)
+
 	isRoot := false
-	if page.Url == "" {
+	if site.RootGroup == root {
 		isRoot = true
 	}
 
@@ -80,27 +82,35 @@ func renderPageToFile(siteUrl string, page *Page, tmpl *template.Template, path 
 		SubPages:  subPages,
 		Page:      page,
 		Title:     page.Title,
-		BaseURL:   siteUrl,
+		BaseURL:   site.SiteUrl,
 	}
 
-	return generateHTML(path, tmpl, page.Template, &data)
+	return generateHTML(outputPath, page.Template, &data)
 }
 
-func renderEmptyToFile(siteUrl string, title string, tmpl *template.Template, path string, nav []*Group, subGroups []*Group, subPages []*Page) error {
+func renderEmptyToFile(site *Site, root *Group, nav []*Group, outputPath string) error {
+	subGroups := groupSubgroups(root)
+	subPages := groupSubPages(root)
+
+	isRoot := false
+	if site.RootGroup == root {
+		isRoot = true
+	}
+
 	data := templatePage{
-		IsRoot:    false,
+		IsRoot:    isRoot,
 		Nav:       nav,
 		SubGroups: subGroups,
 		SubPages:  subPages,
 		Page:      nil,
-		Title:     title,
-		BaseURL:   siteUrl,
+		Title:     root.Name,
+		BaseURL:   site.SiteUrl,
 	}
 
-	return generateHTML(path, tmpl, "default.html", &data)
+	return generateHTML(outputPath, "default.html", &data)
 }
 
-func generateHTML(path string, tmpl *template.Template, template string, data *templatePage) error {
+func generateHTML(path string, template string, data *templatePage) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 		return err
 	}
@@ -111,7 +121,7 @@ func generateHTML(path string, tmpl *template.Template, template string, data *t
 	}
 	defer f.Close()
 
-	return tmpl.ExecuteTemplate(f, template, data)
+	return Templates.ExecuteTemplate(f, template, data)
 }
 
 // 하위 그룹 정렬된 리스트
@@ -138,9 +148,7 @@ func groupSubPages(g *Group) []*Page {
 	result := make([]*Page, 0, len(keys))
 	for _, k := range keys {
 		p := g.Pages[k]
-		if p != g.Index {
-			result = append(result, p)
-		}
+		result = append(result, p)
 	}
 	return result
 }

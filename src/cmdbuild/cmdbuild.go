@@ -23,9 +23,7 @@ func Build(rootPath string, configFile string) {
 		log.Fatalf("Error reading content/: %s", err)
 	}
 
-	// ck(site.RootGroup, 0)
-	// return
-	tmpl := template.Must(template.ParseFiles(
+	sugo.Templates = template.Must(template.ParseFiles(
 		"template/header.html",
 		"template/footer.html",
 		"template/default.html",
@@ -34,7 +32,7 @@ func Build(rootPath string, configFile string) {
 	topNav := sugo.GetTopLevelGroups(site.RootGroup)
 
 	os.RemoveAll("dist")
-	if err := sugo.RenderGroupToFiles(site.SiteUrl, site.RootGroup, tmpl, "build", topNav); err != nil {
+	if err := sugo.RenderGroupToFiles(site, site.RootGroup, topNav); err != nil {
 		log.Fatalf("빌드 실패: %v", err)
 	}
 }
