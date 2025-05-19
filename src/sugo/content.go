@@ -43,11 +43,18 @@ func readDir(root string, entry *os.DirEntry, group *Group) error {
 		return err
 	}
 
+	url := group.Url
+	if url == "" {
+		url = name
+	} else {
+		url = fmt.Sprintf("%v/%v", group.Url, name)
+	}
+
 	newGroup := Group{
 		Name:   name,
 		Groups: map[int]*Group{},
 		Pages:  map[int]*Page{},
-		Url:    fmt.Sprintf("%v/%v", group.Url, name),
+		Url:    url,
 	}
 
 	if _, ok := group.Groups[index]; ok {

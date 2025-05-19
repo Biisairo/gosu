@@ -31,7 +31,7 @@ func Build(rootPath string, configFile string) {
 
 	topNav := sugo.GetTopLevelGroups(site.RootGroup)
 
-	os.RemoveAll("dist")
+	os.RemoveAll("build")
 	if err := sugo.RenderGroupToFiles(site, site.RootGroup, topNav); err != nil {
 		log.Fatalf("빌드 실패: %v", err)
 	}

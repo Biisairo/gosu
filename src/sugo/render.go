@@ -33,7 +33,7 @@ func GetTopLevelGroups(root *Group) []*Group {
 // 그룹 렌더링
 func RenderGroupToFiles(site *Site, root *Group, topNav []*Group) error {
 	if root.Index != nil {
-		outputPath := filepath.Join(root.Url, "index.html")
+		outputPath := filepath.Join("build", root.Url, "index.html")
 		if err := renderPageToFile(site, root, root.Index, topNav, outputPath); err != nil {
 			return err
 		}
