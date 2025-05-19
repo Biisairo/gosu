@@ -10,7 +10,7 @@
     {{ $base := .BaseURL }}
 
     <main>
-        {{ if .IsRoot }}
+        {{ if not .IsRoot }}
             {{ if .SubGroups }}
                 <h2>하위 그룹</h2>
                 <ul>
