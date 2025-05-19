@@ -14,6 +14,7 @@ type templatePage struct {
 	SubPages  []*Page
 	Page      *Page
 	Title     string
+	BaseURL   string
 }
 
 // 정렬된 상위 그룹들(nav용)
@@ -31,15 +32,15 @@ func GetTopLevelGroups(root *Group) []*Group {
 }
 
 // 그룹 렌더링
-func RenderGroupToFiles(root *Group, tmpl *template.Template, outputDir string, topNav []*Group) error {
+func RenderGroupToFiles(siteUrl string, root *Group, tmpl *template.Template, outputDir string, topNav []*Group) error {
 	if root.Index != nil {
 		outputPath := filepath.Join(outputDir, root.Url, "index.html")
-		if err := renderPageToFile(root.Index, tmpl, outputPath, topNav, groupSubgroups(root), groupSubPages(root)); err != nil {
+		if err := renderPageToFile(siteUrl, root.Index, tmpl, outputPath, topNav, groupSubgroups(root), groupSubPages(root)); err != nil {
 			return err
 		}
 	} else {
 		outputPath := filepath.Join(outputDir, root.Url, "index.html")
-		if err := renderEmptyToFile(root.Name, tmpl, outputPath, topNav, groupSubgroups(root), groupSubPages(root)); err != nil {
+		if err := renderEmptyToFile(siteUrl, root.Name, tmpl, outputPath, topNav, groupSubgroups(root), groupSubPages(root)); err != nil {
 			return err
 		}
 	}
@@ -50,14 +51,14 @@ func RenderGroupToFiles(root *Group, tmpl *template.Template, outputDir string, 
 			continue
 		}
 		outputPath := filepath.Join(outputDir, page.Url+".html")
-		if err := renderPageToFile(page, tmpl, outputPath, topNav, nil, nil); err != nil {
+		if err := renderPageToFile(siteUrl, page, tmpl, outputPath, topNav, nil, nil); err != nil {
 			return err
 		}
 	}
 
 	// Recursively render subgroups
 	for _, sub := range root.Groups {
-		if err := RenderGroupToFiles(sub, tmpl, outputDir, topNav); err != nil {
+		if err := RenderGroupToFiles(siteUrl, sub, tmpl, outputDir, topNav); err != nil {
 			return err
 		}
 	}
@@ -66,7 +67,7 @@ func RenderGroupToFiles(root *Group, tmpl *template.Template, outputDir string, 
 }
 
 // 렌더링에 필요한 데이터 구조 및 실행
-func renderPageToFile(page *Page, tmpl *template.Template, path string, nav []*Group, subGroups []*Group, subPages []*Page) error {
+func renderPageToFile(siteUrl string, page *Page, tmpl *template.Template, path string, nav []*Group, subGroups []*Group, subPages []*Page) error {
 	isRoot := false
 	if page.Url == "" {
 		isRoot = true
@@ -79,12 +80,13 @@ func renderPageToFile(page *Page, tmpl *template.Template, path string, nav []*G
 		SubPages:  subPages,
 		Page:      page,
 		Title:     page.Title,
+		BaseURL:   siteUrl,
 	}
 
 	return generateHTML(path, tmpl, page.Template, &data)
 }
 
-func renderEmptyToFile(title string, tmpl *template.Template, path string, nav []*Group, subGroups []*Group, subPages []*Page) error {
+func renderEmptyToFile(siteUrl string, title string, tmpl *template.Template, path string, nav []*Group, subGroups []*Group, subPages []*Page) error {
 	data := templatePage{
 		IsRoot:    false,
 		Nav:       nav,
@@ -92,6 +94,7 @@ func renderEmptyToFile(title string, tmpl *template.Template, path string, nav [
 		SubPages:  subPages,
 		Page:      nil,
 		Title:     title,
+		BaseURL:   siteUrl,
 	}
 
 	return generateHTML(path, tmpl, "default.html", &data)

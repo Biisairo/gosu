@@ -1,9 +1,11 @@
     <header>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
+                {{ $base := .BaseURL }}
+
+                <li><a href="{{ $base }}">Home</a></li>
                 {{ range .Nav }}
-                    <li><a href="{{ .Url }}/">{{ .Name }}</a></li>
+                    <li><a href="{{ $base }}{{ .Url }}/">{{ .Name }}</a></li>
                 {{ end }}
             </ul>
         </nav>
