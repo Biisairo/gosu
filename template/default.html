@@ -1,13 +1,15 @@
 <!DOCTYPE html>
+
+{{ $base := .BaseURL }}
+
 <html>
 <head>
     <meta charset="UTF-8">
     <title>{{ .Title }}</title>
+    <link rel="icon" href="{{ $base }}static/favicon.ico" type="image/x-icon">
 </head>
 <body>
     {{ template "header.html" . }}
-
-    {{ $base := .BaseURL }}
 
     <main>
         {{ if not .IsRoot }}

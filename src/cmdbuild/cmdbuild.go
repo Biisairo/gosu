@@ -2,6 +2,8 @@ package cmdbuild
 
 import (
 	"html/template"
+	"io"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -27,6 +29,7 @@ func Build(rootPath string, configFile string) {
 		"template/header.html",
 		"template/footer.html",
 		"template/default.html",
+		"template/style.html",
 	))
 
 	topNav := sugo.GetTopLevelGroups(site.RootGroup)
@@ -35,6 +38,57 @@ func Build(rootPath string, configFile string) {
 	if err := sugo.RenderGroupToFiles(site, site.RootGroup, topNav); err != nil {
 		log.Fatalf("빌드 실패: %v", err)
 	}
+
+	CopyDir("static", "build/static")
+}
+
+func CopyDir(src string, dst string) error {
+	return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		relPath, err := filepath.Rel(src, path)
+		if err != nil {
+			return err
+		}
+
+		dstPath := filepath.Join(dst, relPath)
+
+		if d.IsDir() {
+			return os.MkdirAll(dstPath, 0755)
+		}
+
+		// 파일 복사
+		return copyFile(path, dstPath)
+	})
+}
+
+func copyFile(srcFile, dstFile string) error {
+	in, err := os.Open(srcFile)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+
+	out, err := os.Create(dstFile)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, in)
+	if err != nil {
+		return err
+	}
+
+	// 권한 복사
+	info, err := os.Stat(srcFile)
+	if err != nil {
+		return err
+	}
+
+	return os.Chmod(dstFile, info.Mode())
 }
 
 func ck(g *sugo.Group, layer int) {
