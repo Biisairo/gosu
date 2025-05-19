@@ -13,6 +13,28 @@
     setting -> page -> Build and deployment -> branch -> select gh-pages
 8. wait for deploy action
 
+## rule
+
+### file naming
+
+Name the folder that will become group
+- num.group_name
+- ex) 1.Study
+ Name of the md, html file that will be the page
+- num.file_name
+- ex) 1.CS.md
+
+### page setting
+
+The beginning of the PAGE file
+```
++++
+title = “title of page”
+template = “template_name.html”
++++
+```
+If template is not present, default.html will be used as the default
+
 ## content dir
 
 config menu tree as content dir tree
