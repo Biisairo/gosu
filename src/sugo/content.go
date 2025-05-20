@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 )
@@ -82,14 +81,12 @@ func readFile(root string, entry *os.DirEntry, group *Group) error {
 	pathStem = strings.TrimSuffix(pathStem, ".html")
 
 	if pathName == "index.md" {
-		groupName := path.Base(root)
-		_, trimmedGroupName, err := ParseIndexedName(groupName)
-		if err != nil {
-			return err
+		if group.Name == "" {
+			group.Name = "Home"
 		}
 
 		page := &Page{
-			Title:        trimmedGroupName,
+			Title:        group.Name,
 			OrigFilepath: filepath.Join(root, pathName),
 			Template:     "default.html",
 			Url:          group.Url,
