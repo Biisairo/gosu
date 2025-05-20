@@ -40,10 +40,10 @@ func Build(rootPath string, configFile string) {
 		log.Fatalf("빌드 실패: %v", err)
 	}
 
-	CopyDir("static", "build/static")
+	copyDir("static", "build/static")
 }
 
-func CopyDir(src string, dst string) error {
+func copyDir(src string, dst string) error {
 	return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -60,7 +60,6 @@ func CopyDir(src string, dst string) error {
 			return os.MkdirAll(dstPath, 0755)
 		}
 
-		// 파일 복사
 		return copyFile(path, dstPath)
 	})
 }

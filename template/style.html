@@ -1,5 +1,4 @@
 <style>
-    /* 레이아웃을 flex 기반으로 */
     html,
     body {
         height: 100%;
@@ -31,14 +30,13 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        /* 하단 정렬 */
+
         flex-wrap: wrap;
         gap: 1rem;
     }
 
     nav li:first-child {
         margin-right: auto;
-        /* 첫 번째 항목은 왼쪽으로 */
     }
 
     nav li:not(:first-child) {
@@ -49,12 +47,10 @@
         color: #EEEEEE;
         font-size: 1.5em;
         text-decoration: none;
-        /* 보기 좋게 기본 밑줄 제거 */
     }
 
     nav li:first-child a:hover {
         color: #aadadf;
-        /* hover 색도 동일하게 유지 */
     }
 
     nav a {
@@ -83,7 +79,6 @@
         text-decoration: none;
     }
 
-    /* main이 중간에서 확장되어 footer 밀어냄 */
     main {
         flex: 1;
         margin-bottom: 2rem;
@@ -100,6 +95,7 @@
 
     h2[onclick] {
         user-select: none;
+        color: #2699b6;
     }
 
 
