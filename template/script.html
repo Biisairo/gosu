@@ -1,0 +1,14 @@
+<script>
+    function toggleSection(id) {
+        const section = document.getElementById(id);
+        const header = section.previousElementSibling;
+
+        if (section.style.display === 'none') {
+            section.style.display = 'block';
+            header.innerHTML = header.innerHTML.replace('▶', '▼');
+        } else {
+            section.style.display = 'none';
+            header.innerHTML = header.innerHTML.replace('▼', '▶');
+        }
+    }
+</script>

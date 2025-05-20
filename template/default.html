@@ -3,47 +3,54 @@
 {{ $base := .BaseURL }}
 
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>{{ .Title }}</title>
     <link rel="icon" href="{{ $base }}static/favicon.ico" type="image/x-icon">
 </head>
+
+{{ template "script.html" . }}
+
 <body>
     {{ template "header.html" . }}
 
     <main>
         {{ if not .IsRoot }}
-            {{ if .SubGroups }}
-                <h2>하위 그룹</h2>
-                <ul>
-                    {{ range $i, $g := .SubGroups }}
-                        <li><a href="{{ $base }}{{ $g.Url }}/">{{ $g.Name }}</a></li>
-                    {{ end }}
-                </ul>
-            {{ end }}
+        {{ if .SubGroups }}
+        <h2 onclick="toggleSection('groups')" style="cursor: pointer;">▶ 하위 그룹</h2>
+        <div id="groups" style="display: none;">
+            <ul>
+                {{ range $i, $g := .SubGroups }}
+                <li><a href="{{ $base }}{{ $g.Url }}/">{{ $g.Name }}</a></li>
+                {{ end }}
+            </ul>
+        </div>
+        {{ end }}
         {{ end }}
 
         {{ if .SubPages }}
-            <h2>하위 페이지</h2>
+        <h2 onclick="toggleSection('pages')" style="cursor: pointer;">▶ 하위 페이지</h2>
+        <div id="pages" style="display: none;">
             <ul>
                 {{ range $i, $p := .SubPages }}
-                    <li><a href="{{ $base }}{{ $p.Url }}.html">{{ $p.Title }}</a></li>
+                <li><a href="{{ $base }}{{ $p.Url }}.html">{{ $p.Title }}</a></li>
                 {{ end }}
             </ul>
+        </div>
         {{ end }}
-        
+
         {{ if .Page }}
-            {{ if .Page.Content }}
-            <article>
-                {{ .Page.Content }}
-            </article>
-            {{ end }}
+        {{ if .Page.Content }}
+        <article>
+            {{ .Page.Content }}
+        </article>
+        {{ end }}
         {{ end }}
     </main>
 
     {{ template "footer.html" . }}
 
 </body>
+
 </html>
-
-

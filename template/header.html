@@ -1,15 +1,15 @@
-    <header>
-        <nav>
-            <ul>
-                {{ $base := .BaseURL }}
+<header>
+    <nav>
+        <ul>
+            {{ $base := .BaseURL }}
 
-                <li><a href="{{ $base }}">Home</a></li>
-                {{ range .Nav }}
-                    <li><a href="{{ $base }}{{ .Url }}/">{{ .Name }}</a></li>
-                {{ end }}
-            </ul>
-        </nav>
+            <li><a href="{{ $base }}">Home</a></li>
+            {{ range .Nav }}
+            <li><a href="{{ $base }}{{ .Url }}/">{{ .Name }}</a></li>
+            {{ end }}
+        </ul>
+    </nav>
 
-        {{ template "style.html" . }}
+    {{ template "style.html" . }}
 
-    </header>
+</header>

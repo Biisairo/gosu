@@ -30,6 +30,7 @@ func Build(rootPath string, configFile string) {
 		"template/footer.html",
 		"template/default.html",
 		"template/style.html",
+		"template/script.html",
 	))
 
 	topNav := sugo.GetTopLevelGroups(site.RootGroup)
