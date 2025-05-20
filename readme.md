@@ -71,5 +71,3 @@ public file
 go template html file
 
 # TODO
-
-페이지 생성 로직 수정
