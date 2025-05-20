@@ -83,9 +83,13 @@ func readFile(root string, entry *os.DirEntry, group *Group) error {
 
 	if pathName == "index.md" {
 		groupName := path.Base(root)
+		_, trimmedGroupName, err := ParseIndexedName(groupName)
+		if err != nil {
+			return err
+		}
 
 		page := &Page{
-			Title:        groupName,
+			Title:        trimmedGroupName,
 			OrigFilepath: filepath.Join(root, pathName),
 			Template:     "default.html",
 			Url:          group.Url,
