@@ -1,6 +1,7 @@
 package cmdbuild
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"io/fs"
@@ -25,13 +26,25 @@ func Build(rootPath string, configFile string) {
 		log.Fatalf("Error reading content/: %s", err)
 	}
 
-	sugo.Templates = template.Must(template.ParseFiles(
-		"template/header.html",
-		"template/footer.html",
-		"template/default.html",
-		"template/style.html",
-		"template/script.html",
-	))
+	files, err := os.ReadDir("template")
+	if err != nil {
+		log.Fatalf("Error loading template: %v\n", err)
+	}
+
+	var templateName []string
+	for _, file := range files {
+		name := file.Name()
+		ext := filepath.Ext(name)
+
+		if ext != ".html" {
+			log.Fatalf("Error wrong template extension: %v\n", err)
+		}
+
+		templateFile := fmt.Sprintf("template/%s", name)
+		templateName = append(templateName, templateFile)
+	}
+
+	sugo.Templates = template.Must(template.ParseFiles(templateName...))
 
 	topNav := sugo.GetTopLevelGroups(site.RootGroup)
 
